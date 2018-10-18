@@ -13,10 +13,7 @@ RobustKPCA::RobustKPCA()
 	this->m_evalGTMatrix.fill(0);
 
 	constructed_KPCA.fill(0);
-	constructed_NIPS09.fill(0);
-	constructed_RobustKernelLRR.fill(0);
 	constructed_RobustPCA.fill(0);
-	constructed_PCA.fill(0);
 	constructed_RKPCA.fill(0); 
 	constructed_Miccai17.fill(0); 
 
@@ -1342,11 +1339,6 @@ vtkSmartPointer< vtkPolyData > RobustKPCA::ProjectShapeNonlinearModel(double _pr
 	if (this->m_modelType == "KPCA" || this->m_modelType == "Miccai17")
 	{
 		outputVector = this->backProject(inputKPCs);
-	}
-
-	else if (this->m_modelType == "NIPS09")
-	{
-		outputVector = this->backProjectNIPS09(shapeVector, 0.1); 
 	}
 
 	else if (this->m_modelType == "RKPCA")
