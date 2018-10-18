@@ -94,8 +94,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 // internal calls 
 #include "RobustKPCA.h"
-//#include "EvaluationMeasures.h"
-//#include "ProbabilityCalculation.h"
+
 
 class NonlinearModelling : public QmitkAbstractView
 {
@@ -129,14 +128,7 @@ protected slots:
 
 	 void Miccai17(); 
 
-	 void KernelRobustLRR();
-
 	 void RKPCA(); 
-
-	 void NIPS09(); 
-
-	 void PCATraining(); 
-
 
 	 // ====================================== Evaluation =============================================== //
 	 
@@ -178,41 +170,6 @@ protected slots:
 
 	 // ================================= Additional Tools =========================================== // 
 
-
-	 /**
-	  * @brief  Visualize m_reconstructions 
-	  */
-	 void VisualizeReconstructions(); 
-
-	 /**
-	  * @brief  Save m_reconstructions 
-	  */
-	 void SaveReconstructions(); 
-
-
-	 /**
-	  *  @brief  load training data sets for modeling and run the modeling 
-	  *  @param  call modeling functions regarding the model type 
-	  *          set slider
-	  */
-	 void ModelVisualization(); 
-
-
-	 void ModelVarianceMode1Slider(int _value); 
-
-
-	 void ModelVarianceMode2Slider(int _value); 
-
-
-	 void ModelVarianceMode3Slider(int _value); 
-
-
-	 void ModelVarianceMode4Slider(int _value); 
-
-
-	 void ModelVarianceMode5Slider(int _value); 
-
-
 	 /**
 	  *  @brief   Load training polys to estimate the gamma
 	  *           Find mean the nearest neighborhood distance of every training sample
@@ -220,45 +177,9 @@ protected slots:
 	 void SigmaEstimation();
 
 
-	 // ================================= Additional Tools =========================================== // 
-
-	 
-	 void LoadTargetCenterDir();    /**> Load Original Datasets **/
-	 void LoadMovedDir(); 
-
-	 void StartBoneMerging(); 
-	 void StartBoneCropping();      /**> Crop whole foot into several single-bone  **/
-
-
-	 /**
-	  *  @brief    load folder-tree Dirs and merge polys in each sub-dir 
-	  *            save the folder name as the output poly name 
-	  */
-	 void MergePolysSubDirs(); 
-
-	 /**
-	  *  @brief   load the polys which are required to move to the destination 
-	  *  @param   the polyDataSet m_toMovePolyDataSets
-	  *                           m_toMovePolyNames
-	  */
-	 void LoadPolyToMove(); 
-
-	 /**
-	  *  @brief   load the polys which have destination center of the "to move polys"
-	  *           Start moving after loading 
-	  */
-	 void LoadDestinationFolder(); 
-
-
 protected:
 
     virtual void SetFocus();
-
-    void VisualizeDatasets(std::vector< vtkSmartPointer< vtkPolyData > > &m_datasets, std::string name0, bool visible); 
-
-	void VisualizePolyData(vtkSmartPointer< vtkPolyData > &polyData, std::string fileName, bool visible);
-
-	void SaveResultMeshes(std::vector< vtkSmartPointer< vtkPolyData > > &m_datasets, std::string name0); 
 
 	void AlignDataSetsWithScaling(std::vector< vtkSmartPointer< vtkPolyData >> &m_meshes);
 
@@ -266,19 +187,7 @@ protected:
 
 	void CenterOfMassToOrigin( std::vector< vtkSmartPointer< vtkPolyData >> &m_meshes, bool weighting );
 
-	void ReadWeightings( std::vector< vtkSmartPointer<vtkPolyData> > &m_meshes, std::string fileName );
-
 	std::vector< pdm::Sample* >* getGeneratedSamples(std::vector< vtkSmartPointer< vtkPolyData >> &m_meshes); 
-
-	void WriteOutPolyData(vtkSmartPointer< vtkPolyData > poly, std::string fileName);
-	
-	void AddPolyToNode(vtkPolyData* poly, std::string meshName, bool visable);
-	
-	void WriteWeightings(vnl_matrix< int > weightingMatrix); 
-
-	void AutomaticBoneMerging(std::vector< vtkSmartPointer< vtkPolyData >> targetSizeDatasets, std::vector< vtkSmartPointer< vtkPolyData >> movedDatasets, int order);
-
-	void AutomaticBoneCropping(vtkSmartPointer< vtkPolyData > currPoly, vtkSmartPointer< vtkIdTypeArray > ids, std::string name);
 
 	void estimateKernelWidth(std::vector< vtkSmartPointer< vtkPolyData >> datasets, double & EstimatedSigma); 
 
@@ -308,12 +217,6 @@ protected:
 	std::vector< vtkSmartPointer< vtkPolyData > > m_dataSetsBackup;     /**> for method training use (preserve inputs)**/
 	std::vector< vtkSmartPointer< vtkPolyData > > m_testGTForBP;        /**> for back propagation test **/
 	std::vector< vtkSmartPointer< vtkPolyData > > m_reconstructions;    /**> for evaluation distance with GT **/
-
-	QStringList targetDir; 
-	QStringList movedDir; 
-	
-	std::vector< vtkSmartPointer< vtkPolyData > > m_toMovePolyDataSets; 
-	std::vector< std::string > m_toMovePolyNames; 
 
 	std::vector< pdm::Sample* >* GTSamples; 
 
