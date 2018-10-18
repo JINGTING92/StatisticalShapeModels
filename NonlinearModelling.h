@@ -197,8 +197,6 @@ protected:
 
 	double ComputeEucliDistPolys(vtkSmartPointer< vtkPolyData > poly1, vtkSmartPointer< vtkPolyData > poly2); 
 
-	void ICPAlignment(vtkSmartPointer< vtkPolyData > _polyGT, vtkSmartPointer< vtkPolyData > & _polyToAlign); 
-
 	void ComputeNormals(vtkPolyData* _poly); 
 
 	vtkSmartPointer< vtkIdList > GetConnectedVertices(vtkSmartPointer< vtkPolyData > _poly, int _id);
