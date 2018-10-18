@@ -202,8 +202,6 @@ void NonlinearModelling::LoadTrainingData()
 	double sigma = 0.0; 
 	this->estimateKernelWidth(m_dataSetsBackup, sigma); 
 
-	this->VisualizeDatasets(m_dataSetsBackup, "gt", false); 
-
 	delete meshDir;
 
 	cout << __FUNCTION__ << " Start Training ! " << endl; 
@@ -322,8 +320,6 @@ void NonlinearModelling::GenerateIncompleteDatasets()
 	double estimatedSigma = 0.0;
 	this->estimateKernelWidth(m_corruptedDatasets, estimatedSigma);
 
-	this->VisualizeDatasets(m_corruptedDatasets, "id", false);
-
 	this->m_modelName = "id"; 
 //	this->EvaluationDistGT(); 
 
@@ -423,8 +419,6 @@ void NonlinearModelling::GenerateLousyDatasets()
 	double estimatedSigma = 0.0; 
 	this->estimateKernelWidth(m_corruptedDatasets, estimatedSigma);
 
-	this->VisualizeDatasets(m_corruptedDatasets, "ld", false);
-
 	this->m_modelName = "ld";
 	this->EvaluationDistGT();
 
@@ -459,8 +453,6 @@ void NonlinearModelling::ResetDatasets()
 
 	double estimatedSigma = 0.0;
 	this->estimateKernelWidth(m_corruptedDatasets, estimatedSigma);
-
-	this->VisualizeDatasets(m_corruptedDatasets, "gt", false);
 
 	cout << __FUNCTION__ << " Reset Done ... " << endl; 
 
@@ -696,11 +688,6 @@ void NonlinearModelling::EvaluationLoadGTForCorruption()
 	}
 
 	std::cout << m_evalGTDatasets.size() << " done ." << std::endl;
-
-//	this->CenterOfMassToOrigin(m_evalGTDatasets, false); 
-
-	this->VisualizeDatasets(m_evalGTDatasets, "GT", false); 
-
 
 }
 
@@ -1544,13 +1531,6 @@ double NonlinearModelling::AlignedAndComputeEucliDistPolys(vtkSmartPointer< vtkP
 	tmpPolys.push_back(polyTest); 
 
 	this->AlignDataSetsWithoutScaling(tmpPolys);
-
-//	this->CenterOfMassToOrigin(tmpPolys, false); 
-
-	this->ICPAlignment(tmpPolys.at(0), tmpPolys.at(1));
-
-	/*this->AddPolyToNode(tmpPolys.at(0), "tmp0", false);
-	this->AddPolyToNode(tmpPolys.at(1), "tmp1", false);*/
 	
 	return this->ComputeEucliDistPolys(tmpPolys.at(0), tmpPolys.at(1)); 
 }
@@ -1580,30 +1560,6 @@ double NonlinearModelling::ComputeEucliDistPolys(vtkSmartPointer< vtkPolyData > 
 }
 
 
-void NonlinearModelling::ICPAlignment(vtkSmartPointer< vtkPolyData > _polyGT, vtkSmartPointer< vtkPolyData > & _polyToAlign)
-{
-	vtkSmartPointer< vtkIterativeClosestPointTransform > icp = vtkSmartPointer< vtkIterativeClosestPointTransform >::New();
-	icp->SetSource(_polyToAlign);
-	icp->SetTarget(_polyGT);
-	//	icp->GetLandmarkTransform()->SetModeToRigidBody();
-	icp->GetLandmarkTransform()->SetModeToSimilarity();  // size ?? 
-	icp->GetLandmarkTransform()->Modified();
-	icp->StartByMatchingCentroidsOn();
-	icp->SetMaximumNumberOfIterations(50);
-	icp->Modified();
-	icp->Update();
-
-	vtkSmartPointer<vtkTransformPolyDataFilter> icpTransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-	icpTransformFilter->SetInputData(_polyToAlign);
-	icpTransformFilter->SetTransform(icp);
-	icpTransformFilter->Update();
-
-	_polyToAlign->DeepCopy(icpTransformFilter->GetOutput());
-	_polyToAlign->Modified();
-
-}
-
-
 void NonlinearModelling::ComputeNormals(vtkPolyData* _poly)
 {
 	vtkSmartPointer<vtkPolyDataNormals> normalsGen = vtkSmartPointer<vtkPolyDataNormals>::New();
@@ -1614,17 +1570,6 @@ void NonlinearModelling::ComputeNormals(vtkPolyData* _poly)
 	normalsGen->AutoOrientNormalsOn();
 	normalsGen->ComputePointNormalsOn();
 	normalsGen->SetFeatureAngle(180);
-
-	//	normalsGen->SplittingOn();  // preserve sharp edges
-	//	normalsGen->ConsistencyOn(); // polygon order 
-	////	normalsGen->ConsistencyOff();
-	//	normalsGen->AutoOrientNormalsOn(); 
-	////	normalsGen->AutoOrientNormalsOff();
-	//	normalsGen->ComputePointNormalsOn();
-	//	normalsGen->ComputeCellNormalsOff(); 
-	//	normalsGen->SetFeatureAngle(180);
-	////	normalsGen->SetSplitting(0); 
-
 	normalsGen->SetInputData(_poly);
 	normalsGen->Update();
 
